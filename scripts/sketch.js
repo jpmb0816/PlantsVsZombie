@@ -16,8 +16,9 @@ function draw() {
 	grid.render();
 
 	textAlign(LEFT);
-	fill('red');
-	text('FPS: ' +  Math.floor(fps), 30, 40);
+	textSize(15);
+	fill('white');
+	text('FPS: ' +  Math.floor(fps), 10, height - 10);
 
 	if (frameCount % 60 === 0) {
 		fps = getFrameRate();

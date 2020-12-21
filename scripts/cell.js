@@ -24,13 +24,24 @@ class Cell {
 		}
 	}
 
-	setEntity(entity) {
-		this.entity = entity;
+	setEntity(name) {
+		this.entity = this.getEntity(name);
 		this.occupied = true;
 	}
 
 	clearEntity() {
 		this.entity = undefined;
 		this.occupied = false;
+	}
+
+	getEntity(name) {
+		switch (name) {
+			case 'blue':
+				return new Plant('blue', this.x + (this.width / 4), this.y + (this.height / 4), this.width / 2, this.height / 2, 'blue', 50, 10);
+			case 'orange':
+				return new Plant('orange', this.x + (this.width / 4), this.y + (this.height / 4), this.width / 2, this.height / 2, 'orange', 100, 20);
+		}
+
+		return undefined;
 	}
 }

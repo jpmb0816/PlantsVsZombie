@@ -76,8 +76,8 @@ class Enemy {
 		}
 
 		// Enemy will eat the entity they collided with
-		for (let x = 0; x < grid.tiles[this.col].length; x++) {
-			const tile = grid.tiles[this.col][x];
+		for (let x = 0; x < grid.tiles[this.col - 1].length; x++) {
+			const tile = grid.tiles[this.col - 1][x];
 
 			if (tile.occupied && grid.collideRR(this, tile.entity)) {
 				this.attack(tile.entity);

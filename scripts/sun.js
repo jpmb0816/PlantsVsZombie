@@ -10,23 +10,29 @@ class Sun {
 		this.aliveDelay = 500;
 		this.aliveTimer = this.aliveDelay;
 
+		this.movementDelay = 3;
+		this.movementTimer = 0;
+
 		this.vx = floor(random(1, 4));
-		this.vy = -floor(random(8, 13));
+		this.vy = floor(random(1, 4));
 
 		this.gravity = 1;
 	}
 
 	update() {
-		this.vy += this.gravity;
-		this.x += this.vx;
-		this.y += this.vy;
+		if (this.movementTimer === this.movementDelay) {
+			this.x += this.vx;
+			this.y += this.vy;
 
-		if (this.y + this.height >= height) {
-			this.y = height - this.height;
-			this.vx *= 0.8;
-			this.vy = 0;
+			this.movementTimer = 0;
+		}
+		else if (this.movementTimer < this.movementDelay) {
+			this.movementTimer++;
 		}
 
+		if (this.x > width || this.y > height) {
+			this.alive = false;
+		}
 		if (this.aliveTimer === 0) {
 			this.aliveTimer = this.aliveDelay;
 			this.alive = false;

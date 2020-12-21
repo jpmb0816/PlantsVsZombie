@@ -1,26 +1,28 @@
 class Plant {
-	constructor(x, y, width, height) {
+	constructor(name, x, y, width, height, color, cost, damage) {
+		this.name = name;
 		this.x = x;
 		this.y = y;
 		this.ox = x;
 		this.oy = y;
 
-		this.row = floor(this.x / grid.width);
-		this.col = floor(this.y / grid.height);
+		this.row = -1;
+		this.col = -1;
 
 		this.width = width;
 		this.height = height;
 		this.ow = width;
 		this.oh = height;
 
-		this.color = 'white';
+		this.cost = cost;
+
+		this.color = color;
 		this.hitColor = 'red';
-		this.attackColor = 'green';
 		this.currentColor = this.color;
 
 		this.alive = true;
 		this.health = 100;
-		this.damage = 10;
+		this.damage = damage;
 
 		this.isHitted = false;
 		this.hitAnimationDelay = 8;
@@ -36,6 +38,9 @@ class Plant {
 	}
 
 	update() {
+		this.row = floor(this.x / grid.width);
+		this.col = floor(this.y / grid.height);
+
 		this.x = this.ox - this.xd;
 		this.y = this.oy - this.xd;
 		this.width = this.ow + (this.xd * 2);
