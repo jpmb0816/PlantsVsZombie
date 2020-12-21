@@ -14,12 +14,17 @@ class Plant {
 		this.oh = height;
 
 		this.color = 'white';
-		this.shootColor = 'green';
+		this.hitColor = 'red';
+		this.attackColor = 'green';
 		this.currentColor = this.color;
 
 		this.alive = true;
 		this.health = 100;
 		this.damage = 10;
+
+		this.isHitted = false;
+		this.hitAnimationDelay = 8;
+		this.hitAnimationTimer = this.hitAnimationDelay;
 
 		this.projectileDelay = 150;
 		this.projectileTimer = 0;
@@ -36,7 +41,9 @@ class Plant {
 		this.width = this.ow + (this.xd * 2);
 		this.height = this.oh + (this.xd * 2);
 
+		// Check if theres an enemy to shoot in relative y
 		if (this.hasEnemyInRelativeY()) {
+			// Throws projectile
 			if (this.projectileTimer === this.projectileDelay) {
 				grid.projectiles.push(new Projectile(this.x + this.width, 
 					(this.y + (this.height / 2)) - (this.projectileHeight / 2), 
@@ -58,7 +65,21 @@ class Plant {
 			this.xd = 0;
 		}
 
-		if (this.health < 0) {
+		// Hit animation
+		if (this.isHitted) {
+			if (this.hitAnimationTimer === 0) {
+				this.hitAnimationTimer = this.hitAnimationDelay;
+				this.currentColor = this.color;
+				this.isHitted = false;
+			}
+			else {
+				this.hitAnimationTimer--;
+				this.currentColor = this.hitColor;
+			}
+		}
+
+		// Check if alive
+		if (this.health <= 0) {
 			this.alive = false;
 		}
 	}
@@ -66,6 +87,11 @@ class Plant {
 	render() {
 		fill(this.currentColor);
 		rect(this.x, this.y, this.width, this.height);
+	}
+
+	receiveDamage(damage) {
+		this.health -= damage;
+		this.isHitted = true;
 	}
 
 	hasEnemyInRelativeY() {

@@ -23,4 +23,14 @@ class Cell {
 			this.entity.render();
 		}
 	}
+
+	setEntity(entity) {
+		this.entity = entity;
+		this.occupied = true;
+	}
+
+	clearEntity() {
+		this.entity = undefined;
+		this.occupied = false;
+	}
 }
