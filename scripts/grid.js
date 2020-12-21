@@ -9,7 +9,8 @@ class Grid {
 
 		this.mouse = {x: -1, y: -1};
 
-		this.tile = new Array(cols);
+		this.tiles = new Array(cols);
+		this.plants = [];
 		this.projectiles = [];
 		this.enemies = [];
 
@@ -24,7 +25,7 @@ class Grid {
 
 		for (let y = 0; y < this.cols; y++) {
 			for (let x = 0; x < this.rows; x++) {
-				this.tile[y][x].update();
+				this.tiles[y][x].update();
 			}
 		}
 
@@ -48,6 +49,7 @@ class Grid {
 			this.respawnTimer++;
 		}
 
+		this.removeDeadPlants();
 		this.removeDeadProjectiles();
 		this.removeDeadEnemies();
 	}
@@ -55,7 +57,7 @@ class Grid {
 	render() {
 		for (let y = 0; y < this.cols; y++) {
 			for (let x = 0; x < this.rows; x++) {
-				this.tile[y][x].render();
+				this.tiles[y][x].render();
 			}
 		}
 
@@ -73,7 +75,7 @@ class Grid {
 		let color = '#000000';
 
 		for (let y = 0; y < this.cols; y++) {
-			this.tile[y] = new Array(this.rows);
+			this.tiles[y] = new Array(this.rows);
 
 			if (this.rows % 2 === 0) {
 				flag = !flag;
@@ -83,7 +85,7 @@ class Grid {
 				color = flag ? '#05d519' : '#00aa0b';
 				flag = !flag;
 
-				this.tile[y][x] = new Cell(this.width * x, this.height * y, 
+				this.tiles[y][x] = new Cell(this.width * x, this.height * y, 
 					this.width, this.height, color);
 			}
 		}
@@ -92,14 +94,26 @@ class Grid {
 	addPlant() {
 		for (let y = 0; y < this.cols; y++) {
 			for (let x = 0; x < this.rows; x++) {
-				const tile = this.tile[y][x];
+				const tile = this.tiles[y][x];
 
 				if (this.collidePR(this.mouse, tile)) {
-					if (mouseButton === LEFT) {
-						tile.addPlant();
+					if (mouseButton === LEFT && !tile.occupied) {
+						const plant = new Plant(tile.x + (tile.width / 4), tile.y + (tile.height / 4), tile.width / 2, tile.height / 2);
+
+						tile.entity = plant;
+						tile.occupied = true;
+						this.plants.push(plant);
 					}
-					else if (mouseButton === RIGHT) {
-						tile.removePlant();
+					else if (mouseButton === RIGHT && tile.occupied && this.collidePR(this.mouse, tile.plant)) {
+						for (let i = 0; i < this.plants.length; i++) {
+							if (this.plants[i] === tile.plant) {
+								this.plants.splice(i, 1);
+								break;
+							}
+						}
+
+						tile.entity = undefined;
+						tile.occupied = false;
 					}
 				}
 			}
@@ -119,6 +133,18 @@ class Grid {
 
 	collideRR(a, b) {
 		return ((a.x < b.x + b.width && a.x + a.width > b.x) && (a.y < b.y + b.height && a.y + a.height > b.y));
+	}
+
+	removeDeadPlants() {
+		for (let i = this.plants.length - 1; i >= 0; i--) {
+			const plant = this.plants[i];
+
+			if (!plant.alive) {
+				this.tiles[plant.col][plant.row].entity = undefined;
+				this.tiles[plant.col][plant.row].occupied = false;
+				this.plants.splice(i, 1);
+			}
+		}
 	}
 
 	removeDeadProjectiles() {

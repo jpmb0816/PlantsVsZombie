@@ -1,14 +1,14 @@
 class Projectile {
-	constructor(x, y, width, height, color) {
+	constructor(x, y, width, height, color, damage) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.color = color;
 		this.alive = true;
-		this.damage = 10;
+		this.damage = damage;
 
-		this.vx = 2;
+		this.vx = 4;
 		this.vy = 0;
 	}
 

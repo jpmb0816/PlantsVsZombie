@@ -5,6 +5,9 @@ class Plant {
 		this.ox = x;
 		this.oy = y;
 
+		this.row = floor(this.x / grid.width);
+		this.col = floor(this.y / grid.height);
+
 		this.width = width;
 		this.height = height;
 		this.ow = width;
@@ -13,6 +16,10 @@ class Plant {
 		this.color = 'white';
 		this.shootColor = 'green';
 		this.currentColor = this.color;
+
+		this.alive = true;
+		this.health = 100;
+		this.damage = 10;
 
 		this.projectileDelay = 150;
 		this.projectileTimer = 0;
@@ -29,22 +36,47 @@ class Plant {
 		this.width = this.ow + (this.xd * 2);
 		this.height = this.oh + (this.xd * 2);
 
-		if (this.projectileTimer === this.projectileDelay) {
-			grid.projectiles.push(new Projectile(this.x + this.width, 
-				(this.y + (this.height / 2)) - (this.projectileHeight / 2), 
-				this.projectileWidth, this.projectileHeight, this.projectileColor));
+		if (this.hasEnemyInRelativeY()) {
+			if (this.projectileTimer === this.projectileDelay) {
+				grid.projectiles.push(new Projectile(this.x + this.width, 
+					(this.y + (this.height / 2)) - (this.projectileHeight / 2), 
+					this.projectileWidth, this.projectileHeight, this.projectileColor, this.damage));
 
+				this.projectileTimer = 0;
+				this.xd = 0;
+			}
+			else if (this.projectileTimer < this.projectileDelay) {
+				this.projectileTimer++;
+
+				if (this.projectileTimer % 30 === 0) {
+					this.xd++;
+				}
+			}
+		}
+		else {
 			this.projectileTimer = 0;
 			this.xd = 0;
 		}
-		else if (this.projectileTimer < this.projectileDelay) {
-			this.projectileTimer++;
-			this.xd += 0.05;
+
+		if (this.health < 0) {
+			this.alive = false;
 		}
 	}
 
 	render() {
 		fill(this.currentColor);
 		rect(this.x, this.y, this.width, this.height);
+	}
+
+	hasEnemyInRelativeY() {
+		for (let i = 0; i < grid.enemies.length; i++) {
+			const enemy = grid.enemies[i];
+
+			if (this.col === enemy.col) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
