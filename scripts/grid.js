@@ -19,7 +19,7 @@ class Grid {
 		this.slots = new Array(6);
 		this.selectedSlotIndex = 0;
 
-		this.respawnEnemyDelay = 1000;
+		this.respawnEnemyDelay = 500;
 		this.respawnEnemyTimer = this.respawnEnemyDelay;
 
 		this.sun = 0;
